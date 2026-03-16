@@ -1,0 +1,112 @@
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.header p {
+  margin-top: 0.5rem;
+  color: #6b7280;
+}
+
+.section {
+  margin-top: 2rem;
+}
+
+.section h2 {
+  margin: 0 0 1rem;
+}
+
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.concept-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.concept-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.concept-card p {
+  margin: 0.5rem 0;
+  color: #4b5563;
+  min-height: 2.4rem;
+}
+
+.concept-card pre {
+  margin: 0.5rem 0;
+  background: #111827;
+  color: #f9fafb;
+  padding: 0.75rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  min-height: 78px;
+}
+
+.demo-box {
+  margin-top: 0.75rem;
+}
+
+.mini-card {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.mini-card h4,
+.mini-card p {
+  margin: 0;
+}
+
+.mini-card input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.mini-card button {
+  border: none;
+  background: #111827;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  cursor: pointer;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer {
+  margin-top: 2rem;
+  color: #6b7280;
+}
