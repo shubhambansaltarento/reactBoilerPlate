@@ -92,20 +92,64 @@ export default function Home() {
   return (
     <div>
       <h2>Home Page</h2>
-      {posts.map((p) => <p key={p.id}>{p.title}</p>)}
 
-      {error && (
-        <div>
-          <p>Could not load more posts.</p>
-          <button onClick={handleRetry}>Retry from start</button>
+      <section className="section">
+        <h2>Infinite Scroll Posts Demo</h2>
+        <div className="mini-card">
+          <p>
+            This example loads posts page-by-page and automatically fetches the
+            next page when you scroll to the bottom.
+          </p>
+          <ul className="list">
+            <li>
+              <strong>State used:</strong> <code>posts</code>, <code>page</code>,{' '}
+              <code>loading</code>, <code>error</code>, <code>hasMore</code>
+            </li>
+            <li>
+              <strong>Data fetch flow:</strong> when <code>page</code> changes,
+              <code> getPosts(page, limit)</code> runs and appends new results.
+            </li>
+            <li>
+              <strong>Observer trigger:</strong> an <code>IntersectionObserver</code>{' '}
+              watches a tiny sentinel div at the bottom.
+            </li>
+            <li>
+              <strong>Safety checks:</strong> next page loads only when sentinel
+              is visible, not already loading, no error exists, and more data is
+              expected.
+            </li>
+            <li>
+              <strong>End condition:</strong> if returned items are fewer than
+              <code> limit</code>, then <code>hasMore</code> becomes false.
+            </li>
+          </ul>
         </div>
-      )}
 
-      {loading && posts.length > 0 && <p>Loading more...</p>}
+        <pre>
+          <code>{`const observer = new IntersectionObserver((entries) => {
+  const [entry] = entries
 
-      {!hasMore && !error && posts.length > 0 && <p>No more posts.</p>}
+  if (entry.isIntersecting && hasMore && !loading && !error) {
+    setPage((prevPage) => prevPage + 1)
+  }
+})`}</code>
+        </pre>
 
-      <div ref={loadMoreRef} style={{ height: 1 }} />
+        {posts.map((p) => <p key={p.id}>{p.title}</p>)}
+
+        {error && (
+          <div>
+            <p>Could not load more posts.</p>
+            <button onClick={handleRetry}>Retry from start</button>
+          </div>
+        )}
+
+        {loading && posts.length > 0 && <p>Loading more...</p>}
+
+        {!hasMore && !error && posts.length > 0 && <p>No more posts.</p>}
+
+        <div ref={loadMoreRef} style={{ height: 1 }} />
+      </section>
     </div>
   )
 }

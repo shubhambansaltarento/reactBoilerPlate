@@ -1,23 +1,3 @@
-import {
-  CallbackDemo,
-  CompositionDemo,
-  ConditionalDemo,
-  ControlledFormDemo,
-  CustomHookDemo,
-  EffectDemo,
-  ErrorBoundaryDemo,
-  EventDemo,
-  ListDemo,
-  MemoDemo,
-  PropsDemo,
-  RefDemo,
-} from './components/ConceptDemos'
-import {
-  ContextDemo,
-  LocalStateDemo,
-  ReducerDemo,
-  ZustandDemo,
-} from './components/StateDemos'
 import './App.css'
 import { Link, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
@@ -26,6 +6,7 @@ import About from './pages/About';
 import BoilerPlate from './pages/BoilerPlate';
 import TodoBox from './pages/TodoBox.jsx';
 import ReduxCounter from './pages/ReduxCounter.jsx';
+import HooksDeepDive from './pages/HooksDeepDive.jsx';
 
 
 function App() {
@@ -37,6 +18,7 @@ function App() {
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
         <Link to="/boilerplate">BoilerPlate</Link>
+        <Link to="/hooks-deep-dive">Hooks Deep Dive</Link>
         <Link to="/todo">TodoBox</Link>
         <Link to="/redux-counter">ReduxCounter</Link>
       </nav>
@@ -46,6 +28,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/boilerplate" element={<BoilerPlate />} />
+        <Route path="/hooks-deep-dive" element={<HooksDeepDive />} />
         <Route path="/todo" element={<TodoBox />} />
         <Route path="/redux-counter" element={<ReduxCounter />} />
       </Routes>
