@@ -1,154 +1,113 @@
-import { useEffect, useRef, useState } from 'react'
-import { getPosts } from '../services/postService'
+import { useState } from 'react'
+import Editor from '@monaco-editor/react'
 
 export default function Home() {
-  const [posts, setPosts] = useState([])
-  const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [hasMore, setHasMore] = useState(true)
-  const loadMoreRef = useRef(null)
-  const limit = 10
+  const [code, setCode] = useState(`// Practice React concepts here!
+// Example: Write a simple component
 
-  useEffect(() => {
-    let ignore = false
-
-    async function loadPosts() {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const nextPosts = await getPosts(page, limit)
-
-        if (ignore) {
-          return
-        }
-
-        setPosts((prevPosts) =>
-          page === 1 ? nextPosts : [...prevPosts, ...nextPosts],
-        )
-        setHasMore(nextPosts.length === limit)
-      } catch (err) {
-        if (!ignore) {
-          setError(err)
-        }
-      } finally {
-        if (!ignore) {
-          setLoading(false)
-        }
-      }
-    }
-
-    if (hasMore || page === 1) {
-      loadPosts()
-    }
-
-    return () => {
-      ignore = true
-    }
-  }, [page, hasMore])
-
-  useEffect(() => {
-    if (!loadMoreRef.current) {
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries
-
-        if (entry.isIntersecting && hasMore && !loading && !error) {
-          setPage((prevPage) => prevPage + 1)
-        }
-      },
-      { threshold: 1 },
-    )
-
-    observer.observe(loadMoreRef.current)
-
-    return () => observer.disconnect()
-  }, [hasMore, loading, error])
-
-  const handleRetry = () => {
-    setError(null)
-    setPosts([])
-    setHasMore(true)
-    setPage(1)
-  }
-
-  if (loading && posts.length === 0) {
-    return <p>Loading posts...</p>
-  }
-
-  if (error && posts.length === 0) {
-    return (
-      <div>
-        <p>Failed to load posts.</p>
-        <button onClick={handleRetry}>Retry</button>
-      </div>
-    )
-  }
+function Counter() {
+  const [count, setCount] = React.useState(0)
 
   return (
     <div>
-      <h2>Home Page</h2>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+    </div>
+  )
+}`)
+
+  const [theme, setTheme] = useState('vs-dark')
+
+  const editorThemes = ['vs-dark', 'vs', 'hc-black']
+
+  return (
+    <div>
+      <h2>Welcome to React Boilerplate</h2>
 
       <section className="section">
-        <h2>Infinite Scroll Posts Demo</h2>
+        <h3>Quick Learning Guide</h3>
         <div className="mini-card">
           <p>
-            This example loads posts page-by-page and automatically fetches the
-            next page when you scroll to the bottom.
+            This boilerplate covers essential React patterns. Use the tabs above
+            to explore different concepts and patterns.
           </p>
           <ul className="list">
             <li>
-              <strong>State used:</strong> <code>posts</code>, <code>page</code>,{' '}
-              <code>loading</code>, <code>error</code>, <code>hasMore</code>
+              <strong>Hooks Deep Dive:</strong> Learn useRef, useMemo, and
+              useCallback with interactive demos.
             </li>
             <li>
-              <strong>Data fetch flow:</strong> when <code>page</code> changes,
-              <code> getPosts(page, limit)</code> runs and appends new results.
+              <strong>Infinite Scroll:</strong> See pagination and
+              IntersectionObserver in action.
             </li>
             <li>
-              <strong>Observer trigger:</strong> an <code>IntersectionObserver</code>{' '}
-              watches a tiny sentinel div at the bottom.
+              <strong>BoilerPlate:</strong> Comprehensive overview of all core
+              React concepts.
             </li>
             <li>
-              <strong>Safety checks:</strong> next page loads only when sentinel
-              is visible, not already loading, no error exists, and more data is
-              expected.
+              <strong>TodoBox:</strong> State management example with Zustand.
             </li>
             <li>
-              <strong>End condition:</strong> if returned items are fewer than
-              <code> limit</code>, then <code>hasMore</code> becomes false.
+              <strong>Redux Counter:</strong> Redux Toolkit example.
             </li>
           </ul>
         </div>
+      </section>
 
-        <pre>
-          <code>{`const observer = new IntersectionObserver((entries) => {
-  const [entry] = entries
+      <section className="section">
+        <h3>Code Practice Area</h3>
+        <div className="mini-card">
+          <label className="row">
+            <strong>Theme:</strong>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              style={{ marginLeft: '0.5rem', padding: '0.25rem' }}
+            >
+              {editorThemes.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </label>
 
-  if (entry.isIntersecting && hasMore && !loading && !error) {
-    setPage((prevPage) => prevPage + 1)
-  }
-})`}</code>
-        </pre>
+          <p style={{ marginTop: '0.75rem', color: '#6b7280', fontSize: '0.9em' }}>
+            Edit the code below to practice React. This is a sandbox for learning
+            and experimenting.
+          </p>
+        </div>
 
-        {posts.map((p) => <p key={p.id}>{p.title}</p>)}
+        <div className="editor-container" style={{ marginTop: '1rem' }}>
+          <Editor
+            height="500px"
+            language="javascript"
+            theme={theme}
+            value={code}
+            onChange={(value) => setCode(value || '')}
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              wordWrap: 'on',
+              automaticLayout: true,
+              padding: { top: 16 },
+            }}
+          />
+        </div>
 
-        {error && (
-          <div>
-            <p>Could not load more posts.</p>
-            <button onClick={handleRetry}>Retry from start</button>
-          </div>
-        )}
-
-        {loading && posts.length > 0 && <p>Loading more...</p>}
-
-        {!hasMore && !error && posts.length > 0 && <p>No more posts.</p>}
-
-        <div ref={loadMoreRef} style={{ height: 1 }} />
+        <div className="mini-card" style={{ marginTop: '1rem' }}>
+          <p>
+            <strong>Tips:</strong>
+          </p>
+          <ul className="list">
+            <li>Write React components and experiment with hooks.</li>
+            <li>Use Ctrl+S (Cmd+S on Mac) to auto-save.</li>
+            <li>Explore syntax highlighting and code suggestions.</li>
+            <li>Visit other pages to see working examples of these patterns.</li>
+          </ul>
+        </div>
       </section>
     </div>
   )
