@@ -8,6 +8,7 @@ import TodoBox from './pages/TodoBox.jsx';
 import ReduxCounter from './pages/ReduxCounter.jsx';
 import HooksDeepDive from './pages/HooksDeepDive.jsx';
 import InfiniteScroll from './pages/InfiniteScroll.jsx';
+import ReactQuery from './pages/ReactQuery.jsx';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Link to="/boilerplate">BoilerPlate</Link>
         <Link to="/hooks-deep-dive">Hooks Deep Dive</Link>
         <Link to="/infinite-scroll">Infinite Scroll</Link>
+        <Link to="/react-query">React Query</Link>
         <Link to="/todo">TodoBox</Link>
         <Link to="/redux-counter">ReduxCounter</Link>
       </nav>
@@ -32,6 +34,7 @@ function App() {
         <Route path="/boilerplate" element={<BoilerPlate />} />
         <Route path="/hooks-deep-dive" element={<HooksDeepDive />} />
         <Route path="/infinite-scroll" element={<InfiniteScroll />} />
+        <Route path="/react-query" element={<ReactQuery />} />
         <Route path="/todo" element={<TodoBox />} />
         <Route path="/redux-counter" element={<ReduxCounter />} />
       </Routes>
