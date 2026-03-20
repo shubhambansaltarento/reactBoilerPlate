@@ -1,26 +1,94 @@
 import { useState } from 'react'
 import Editor from '@monaco-editor/react'
 
+const starterSnippets = {
+  javascript: `// JavaScript runner supports console.log output
+const numbers = [1, 2, 3, 4]
+const doubled = numbers.map((n) => n * 2)
+
+console.log('Doubled:', doubled)
+console.log('Sum:', doubled.reduce((acc, n) => acc + n, 0))`,
+  typescript: `type User = {
+  id: number
+  name: string
+}
+
+const users: User[] = [
+  { id: 1, name: 'Alex' },
+  { id: 2, name: 'Sam' },
+]
+
+users.forEach((user) => {
+  console.log(user.name)
+})`,
+  json: `{
+  "name": "React Boilerplate",
+  "features": ["Routing", "Redux", "Zustand", "Monaco"],
+  "version": 1
+}`,
+  html: `<!doctype html>
+<html>
+  <head>
+    <title>Practice</title>
+  </head>
+  <body>
+    <h1>Hello from Monaco</h1>
+  </body>
+</html>`,
+  css: `body {
+  font-family: sans-serif;
+  margin: 0;
+}
+
+h1 {
+  color: #2563eb;
+}`,
+}
+
 export default function Home() {
-  const [code, setCode] = useState(`// Practice React concepts here!
-// Example: Write a simple component
-
-function Counter() {
-  const [count, setCount] = React.useState(0)
-
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(count + 1)}>
-        Increment
-      </button>
-    </div>
-  )
-}`)
-
+  const [language, setLanguage] = useState('javascript')
+  const [code, setCode] = useState(starterSnippets.javascript)
   const [theme, setTheme] = useState('vs-dark')
+  const [output, setOutput] = useState('Click "Run JavaScript" to execute code.')
+  const [runError, setRunError] = useState('')
 
   const editorThemes = ['vs-dark', 'vs', 'hc-black']
+  const editorLanguages = ['javascript', 'typescript', 'json', 'html', 'css']
+
+  const handleLanguageChange = (nextLanguage) => {
+    setLanguage(nextLanguage)
+    setCode(starterSnippets[nextLanguage])
+    setRunError('')
+    setOutput(
+      nextLanguage === 'javascript'
+        ? 'Click "Run JavaScript" to execute code.'
+        : `Switched to ${nextLanguage}. JavaScript executor works only for javascript mode.`,
+    )
+  }
+
+  const runJavaScript = () => {
+    if (language !== 'javascript') {
+      setRunError('Execution is available only when language is set to javascript.')
+      return
+    }
+
+    const logs = []
+    const customConsole = {
+      log: (...args) => {
+        logs.push(args.map((item) => String(item)).join(' '))
+      },
+    }
+
+    try {
+      setRunError('')
+      const executor = new Function('console', code)
+      executor(customConsole)
+      setOutput(logs.length ? logs.join('\n') : 'Code executed with no console output.')
+    } catch (error) {
+      setOutput('Execution failed.')
+      setRunError(error instanceof Error ? error.message : 'Unknown error')
+    }
+  }
 
   return (
     <div>
@@ -59,31 +127,52 @@ function Counter() {
       <section className="section">
         <h3>Code Practice Area</h3>
         <div className="mini-card">
-          <label className="row">
-            <strong>Theme:</strong>
-            <select
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              style={{ marginLeft: '0.5rem', padding: '0.25rem' }}
-            >
-              {editorThemes.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className="row" style={{ flexWrap: 'wrap' }}>
+            <label className="row">
+              <strong>Language:</strong>
+              <select
+                value={language}
+                onChange={(e) => handleLanguageChange(e.target.value)}
+                style={{ marginLeft: '0.5rem', padding: '0.25rem' }}
+              >
+                {editorLanguages.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="row">
+              <strong>Theme:</strong>
+              <select
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+                style={{ marginLeft: '0.5rem', padding: '0.25rem' }}
+              >
+                {editorThemes.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <button onClick={runJavaScript} disabled={language !== 'javascript'}>
+              Run JavaScript
+            </button>
+          </div>
 
           <p style={{ marginTop: '0.75rem', color: '#6b7280', fontSize: '0.9em' }}>
-            Edit the code below to practice React. This is a sandbox for learning
-            and experimenting.
+            Edit code in multiple languages. JavaScript mode includes a basic
+            executor that displays <code>console.log</code> output.
           </p>
         </div>
 
         <div className="editor-container" style={{ marginTop: '1rem' }}>
           <Editor
             height="500px"
-            language="javascript"
+            language={language}
             theme={theme}
             value={code}
             onChange={(value) => setCode(value || '')}
@@ -95,6 +184,20 @@ function Counter() {
               padding: { top: 16 },
             }}
           />
+        </div>
+
+        <div className="mini-card" style={{ marginTop: '1rem' }}>
+          <p>
+            <strong>Output Console:</strong>
+          </p>
+          <pre>
+            <code>{output}</code>
+          </pre>
+          {runError && (
+            <p style={{ color: '#dc2626' }}>
+              <strong>Error:</strong> {runError}
+            </p>
+          )}
         </div>
 
         <div className="mini-card" style={{ marginTop: '1rem' }}>
